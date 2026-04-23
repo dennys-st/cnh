@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoGuia Gamificado - Preparatório CNH</title>
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="toast-container"></div>
+
+    <div class="app-container">
+        
+        <!-- Header / Status Bar -->
+        <header class="header">
+            <button id="backToHome" class="btn-icon hidden" onclick="showHome()">
+                <i class="ri-arrow-left-s-line"></i>
+            </button>
+            
+            <div class="status-panel">
+                <div class="score-badge">
+                    <i class="ri-medal-fill icon-gold"></i>
+                    <span id="scoreValue">0</span> pts
+                </div>
+                <div class="streak-badge hidden" id="streakBadge">
+                    <i class="ri-fire-fill icon-flame"></i>
+                    <span id="streakValue">x2</span>
+                </div>
+            </div>
+            
+            <div class="profile-level" id="userLevel">
+                <i class="ri-user-star-fill"></i> Iniciante
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Dashboard Home -->
+            <div id="view-home" class="view-section active">
+                <div class="hero-card">
+                    <div class="hero-content">
+                        <h1>Rolê <span>Cruz das Almas</span></h1>
+                        <p>Simulador irado! Só o básico e essencial pra tu chegar na Praça da Fonte na moral, sem dar PT na moto e sem tomar dura.</p>
+                        <div class="progress-bar-bg">
+
+                            <div class="progress-bar-fill" id="overall-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">As Fases do Jogo</h2>
+                <div class="modules-grid">
+                    <button class="module-card" onclick="startJourney(); showView('view-checklist')">
+                        <div class="module-icon bg-gradient-blue"><i class="ri-route-line"></i></div>
+                        <div class="module-info">
+                            <h3>1. A Missão</h3>
+                            <p>O feijão com arroz pra sair de casa.</p>
+                        </div>
+                    </button>
+                    
+                    <button class="module-card" onclick="showView('view-sinais')">
+                        <div class="module-icon bg-gradient-yellow"><i class="ri-alert-fill"></i></div>
+                        <div class="module-info">
+                            <h3>2. Placas Sinistras</h3>
+                            <p>As placas que tu não pode ignorar.</p>
+                        </div>
+                    </button>
+
+                    <button class="module-card" onclick="initFlashcards(); showView('view-flashcards')">
+                        <div class="module-icon bg-gradient-purple"><i class="ri-stack-line"></i></div>
+                        <div class="module-info">
+                            <h3>3. Certo ou Caô?</h3>
+                            <p>Tá ligado no que pode ou não fazer?</p>
+                        </div>
+                    </button>
+
+                    <button class="module-card" onclick="initMatchGame(); showView('view-ligar')">
+                        <div class="module-icon bg-gradient-orange"><i class="ri-link"></i></div>
+                        <div class="module-info">
+                            <h3>4. Se Ligar</h3>
+                            <p>Liga a cagada à consequência.</p>
+                        </div>
+                    </button>
+
+                    <button class="module-card" onclick="startQuiz(); showView('view-quiz')">
+                        <div class="module-icon bg-gradient-green"><i class="ri-gamepad-line"></i></div>
+                        <div class="module-info">
+                            <h3>5. Simulado Maneiro</h3>
+                            <p>Teste básico pra não passar perrengue.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- View: Checklist (A Missão) -->
+            <div id="view-checklist" class="view-section">
+                <div class="header-title">
+                    <h2>A Missão (O Básico)</h2>
+                    <p>Demorô! Marca aí o que tu já fez pra sair vivo.</p>
+                </div>
+                
+                <div id="checklist-container" class="checklist-wrapper">
+                    <!-- Gerado dinamicamente no app.js -->
+                </div>
+            </div>
+
+            <!-- View: Sinalizações -->
+            <div id="view-sinais" class="view-section">
+                <div class="header-title">
+                    <h2>Placas Sinistras</h2>
+                    <p>Clica na placa pra ver o que pega na vida real.</p>
+                </div>
+                
+                <div class="signs-grid">
+                    <button class="sign-item" onclick="showSignDetail('pare')">
+                        <div class="sign-image"><img src="images/pare.png" alt="Placa Pare"></div>
+                        <div class="sign-text">
+                            <h4>PARE (R-1)</h4>
+                            <p>Parada total obrigatória</p>
+                        </div>
+                    </button>
+                    <button class="sign-item" onclick="showSignDetail('maodupla')">
+                        <div class="sign-image"><img src="images/mao_dupla.png" alt="Mão Dupla"></div>
+                        <div class="sign-text">
+                            <h4>Mão Dupla Adiante</h4>
+                            <p>Fica esperto com o fluxo</p>
+                        </div>
+                    </button>
+                    <button class="sign-item" onclick="showSignDetail('estacionamento')">
+                        <div class="sign-image"><img src="images/estacionamento.png" alt="Estacionamento"></div>
+                        <div class="sign-text">
+                            <h4>Regulamentado (R-6b)</h4>
+                            <p>Onde largar a motoca</p>
+                        </div>
+                    </button>
+                    <button class="sign-item" onclick="showSignDetail('pedestre')">
+                        <div class="sign-image"><img src="images/pedestres.png" alt="Faixa de Pedestres"></div>
+                        <div class="sign-text">
+                            <h4>Faixa de Pedestre</h4>
+                            <p>Eles têm a moral</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- View: Flashcards (Certo ou Errado) -->
+            <div id="view-flashcards" class="view-section">
+                <div class="header-title">
+                    <h2>Certo ou Caô?</h2>
+                    <p>Fala aí se a ideia é show de bola ou se é caô (mentira). 1 erro e tu perde o combo!</p>
+                </div>
+                
+                <div class="flashcard-ui">
+                    <div class="flashcard-3d-wrapper">
+                        <div class="flashcard" id="active-flashcard">
+                            <div class="front glass-panel">
+                                <i class="ri-scales-3-line icon-bg"></i>
+                                <p id="flashcard-statement" class="statement-text">Carregando...</p>
+                            </div>
+                            <div class="back glass-panel">
+                                <div id="flashcard-icon-result"></div>
+                                <p id="flashcard-feedback" class="feedback-text">Feedback...</p>
+                                <button class="btn-glow mt-auto" onclick="nextFlashcard()">Próxima <i class="ri-arrow-right-line"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons" id="flashcard-actions">
+                        <button class="btn-judge btn-wrong" onclick="answerFlashcard(false)">
+                            <i class="ri-close-circle-fill"></i> É CAÔ!
+                        </button>
+                        <button class="btn-judge btn-correct" onclick="answerFlashcard(true)">
+                            <i class="ri-checkbox-circle-fill"></i> POD CRÊ!
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Ligar (Match Game) -->
+            <div id="view-ligar" class="view-section">
+                <div class="header-title">
+                    <h2>Se Ligar na Parada</h2>
+                    <p>Liga a atitude tosca com o perrengue que vai dar.</p>
+                </div>
+                
+                <div class="match-game">
+                    <div class="match-column" id="match-questions"></div>
+                    <div class="match-column" id="match-answers"></div>
+                </div>
+            </div>
+
+            <!-- View: Quiz -->
+            <div id="view-quiz" class="view-section">
+                <div class="header-title">
+                    <h2>Simulado Interativo</h2>
+                    <div class="quiz-meta">
+                        <span id="quiz-subject" class="tag">Papo Reto</span>
+                        <span id="quiz-progress-text">1/X</span>
+                    </div>
+                </div>
+                
+                <div class="quiz-container glass-panel">
+                    <h3 id="quiz-question-text" class="question-text">Pergunta?</h3>
+                    <div id="quiz-options-container" class="options-grid"></div>
+                    
+                    <div id="quiz-next-container" class="hidden mt-1" style="margin-top: 1.5rem;">
+                        <button class="btn-glow full-width" onclick="nextQuizQuestion()">Próxima Questão <i class="ri-arrow-right-line"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Base -->
+    <div id="sys-modal" class="modal hidden">
+        <div class="modal-content glass-panel glow-border">
+            <h3 id="modal-title">Título</h3>
+            <div id="modal-body" class="modal-body-text"></div>
+            <button class="btn-glow full-width mt-1" onclick="closeModal()">Tô Ligado!</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
